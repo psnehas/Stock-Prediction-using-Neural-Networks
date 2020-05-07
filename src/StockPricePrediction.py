@@ -48,8 +48,21 @@ def load_data():
 
 df = load_data()
 dataset = df.loc[df['Ticker'] == 'AAPL']
+obs = np.arange(1, len(dataset) + 1, 1)
+plt.plot(obs,dataset.iloc[:, 2:3])
+plt.xlabel('Apple Open price 2007')
+plt.show()
 
-plt.plot(dataset.iloc[:, 2:3])
+# TAKING DIFFERENT INDICATORS FOR PREDICTION
+OHLC_avg = dataset[['FirstTradePrice','HighTradePrice', 'LowTradePrice', 'LastTradePrice']].mean(axis = 1)
+HLC_avg = dataset[['HighTradePrice', 'LowTradePrice', 'LastTradePrice']].mean(axis = 1)
+close_val = dataset[['LastTradePrice']]
+
+# PLOTTING ALL INDICATORS IN ONE PLOT
+plt.plot(obs, OHLC_avg, 'r', label = 'OHLC avg')
+plt.plot(obs, HLC_avg, 'b', label = 'HLC avg')
+plt.plot(obs, close_val, 'g', label = 'Closing price')
+plt.legend(loc = 'upper right')
 plt.show()
 
 training_size = int(len(dataset) * 0.75)
@@ -61,8 +74,10 @@ training_set = training_data.iloc[:, 2:3].values
 
 test_set = test_data.iloc[:, 2:3].values
 plt.plot(training_set)
+plt.xlabel('training set')
 plt.show()
 plt.plot(test_set)
+plt.xlabel('test set')
 plt.show()
 
 sc = MinMaxScaler(feature_range = (0, 1))
@@ -74,6 +89,11 @@ y_train = []   #Initialize testing data
 for i in range(60, len(training_set_scaled)):
     X_train.append(training_set_scaled[i-60:i, 0])
     y_train.append(training_set_scaled[i, 0])
+
+plt.plot(X_train, color = 'red', label = 'Open price every 60 readings (X-value)')
+plt.plot(y_train, color = 'blue', label = "Open price after 60 readings window (Y-value)")
+plt.xlabel('normalized training set')
+plt.show()
 
 X_train, y_train = np.array(X_train), np.array(y_train)
 X_train = np.reshape(X_train, (X_train.shape[0], X_train.shape[1], 1))
@@ -120,87 +140,3 @@ plt.xlabel('Time')
 plt.ylabel('Apple Stock Price')
 plt.legend()
 plt.show()
-
-# dataset = df.loc[df['Ticker'] == 'AAPL']
-# del dataset['Ticker']
-
-# # dataset = dataset.reindex(index = dataset.index[::-1])
-
-# obs = np.arange(1, len(dataset) + 1, 1)
-
-
-# OHLC_avg = dataset.mean(axis = 1)
-
-
-# OHLC_avg = np.reshape(OHLC_avg.values, (len(OHLC_avg),1)) 
-# scaler = MinMaxScaler(feature_range=(0, 1))
-# OHLC_avg = scaler.fit_transform(OHLC_avg)
-
-# train_OHLC = int(len(OHLC_avg) * 0.75)
-# test_OHLC = len(OHLC_avg) - train_OHLC
-# train_OHLC, test_OHLC = OHLC_avg[0:train_OHLC,:], OHLC_avg[train_OHLC:len(OHLC_avg),:]
-
-# # making time series dataset (FOR TIME T, VALUES FOR TIME T+1)
-# trainX, trainY = preprocessing.new_dataset(train_OHLC, 1)
-# testX, testY = preprocessing.new_dataset(test_OHLC, 1)
-
-# # reshaping train and test data
-# trainX = np.reshape(trainX, (trainX.shape[0], 1, trainX.shape[1]))
-# testX = np.reshape(testX, (testX.shape[0], 1, testX.shape[1]))
-# step_size = 1
-
-# model = Sequential()
-# model.add(LSTM(32, input_shape=(1, step_size), return_sequences = True))
-# model.add(LSTM(16))
-# model.add(Dense(1))
-# model.add(Activation('linear'))
-
-# model.compile(loss='mean_squared_error', optimizer='adagrad') # compare with other optimizers
-# model.fit(trainX, trainY, epochs=5, batch_size=1, verbose=2)
-
-# # predict
-# trainPredict = model.predict(trainX)
-# testPredict = model.predict(testX)
-
-# # de nomrmalize for plotting
-# trainPredict = scaler.inverse_transform(trainPredict)
-# trainY = scaler.inverse_transform([trainY])
-# testPredict = scaler.inverse_transform(testPredict)
-# testY = scaler.inverse_transform([testY])
-
-
-# # rmse
-# trainScore = math.sqrt(mean_squared_error(trainY[0], trainPredict[:,0]))
-# print('Train RMSE: %.2f' % (trainScore))
-
-# testScore = math.sqrt(mean_squared_error(testY[0], testPredict[:,0]))
-# print('Test RMSE: %.2f' % (testScore))
-
-
-# trainPredictPlot = np.empty_like(OHLC_avg)
-# trainPredictPlot[:, :] = np.nan
-# trainPredictPlot[step_size:len(trainPredict)+step_size, :] = trainPredict
-
-
-# testPredictPlot = np.empty_like(OHLC_avg)
-# testPredictPlot[:, :] = np.nan
-# testPredictPlot[len(trainPredict)+(step_size*2)+1:len(OHLC_avg)-1, :] = testPredict
-
-# # DE-NORMALIZING MAIN DATASET 
-# OHLC_avg = scaler.inverse_transform(OHLC_avg)
-
-
-# plt.plot(OHLC_avg, 'g', label = 'original dataset')
-# plt.plot(trainPredictPlot, 'r', label = 'training set')
-# plt.plot(testPredictPlot, 'b', label = 'predicted stock price/test set')
-# plt.legend(loc = 'upper right')
-# plt.xlabel('Time in Days')
-# plt.ylabel('OHLC Value of Apple Stocks')
-# plt.show()
-
-
-# last_val = testPredict[-1]
-# last_val_scaled = last_val/last_val
-# next_val = model.predict(np.reshape(last_val_scaled, (1,1,1)))
-# print ("Last Day Value:", np.asscalar(last_val))
-# print ("Next Day Value:", np.asscalar(last_val*next_val))
