@@ -13,7 +13,7 @@ from sklearn.metrics import mean_squared_error
 from sklearn.metrics import mean_absolute_error
 from sklearn.model_selection import train_test_split
 from keras.callbacks import EarlyStopping
-file_name = "AAPL"
+file_name = "GOOGL"
 dataset=pd.read_csv(file_name+".csv")
 print(dataset.head(5))
 
@@ -48,8 +48,8 @@ lstm_model.add(Dense(units = 1))
 
 lstm_model.compile(optimizer = 'adam', loss = 'mean_squared_error')
 
-lstm_model.fit(xtrain, ytrain, epochs = 50, batch_size = 32)
-
+lstm_model.fit(xtrain, ytrain, epochs = 20, batch_size = 32)
+lstm_model.save('google_model')
 dataset_train = dataset.iloc[:training_size, 1:2]
 dataset_test = dataset.iloc[training_size:, 1:2]
 dataset_total = pd.concat((dataset_train, dataset_test), axis = 0)
