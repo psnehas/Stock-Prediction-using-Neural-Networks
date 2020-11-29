@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.1/css/bootstrap.min.css" integrity="sha384-VCmXjywReHh4PwowAiWNagnWcLhlEJLA5buUprzK8rxFgeH0kww/aWY76TfkUoSX" crossorigin="anonymous">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
+        
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Stock Prediction</title>
+    </head>
+    <body>
+          <!-- The below header section is for navbar -->
+        <header class="site-header">
+            <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
+            <div class="container">
+                <a class="navbar-brand mr-4" href="/">Stock Prediction API</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarToggle">
+                <div class="navbar-nav mr-auto">
+                    <!-- <a class="nav-item nav-link" href="{{url_for('home')}}">Home</a> -->
+                    <a class="nav-item nav-link" href="{{url_for('analysis')}}">Analysis</a>
+                    <a class="nav-item nav-link" href="{{url_for('predictions')}}">Predictions</a>
+                </div>
+                </div>
+            </div>
+            </nav>
+        </header>
+        <div>
+            <img src="../static/google.png" alt="Apple Stock Prediction" width="50%"  display= "block" margin-left= "auto" margin-right= "auto">
+            <div style='width:50%; float:right'>
+                <div class='tableauPlaceholder' id='viz1606592558131' style='position: relative'>
+                    <noscript>
+                        <a href='#'><img alt=' ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Go&#47;Googlestock_predictions&#47;Sheet1&#47;1_rss.png' style='border: none' /></a>
+                    </noscript>
+                    <object class='tableauViz'  style='display:none;'>
+                        <param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> 
+                        <param name='embed_code_version' value='3' /> 
+                        <param name='site_root' value='' />
+                        <param name='name' value='Googlestock_predictions&#47;Sheet1' />
+                        <param name='tabs' value='no' /><param name='toolbar' value='yes' />
+                        <param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Go&#47;Googlestock_predictions&#47;Sheet1&#47;1.png' /> 
+                        <param name='animate_transition' value='yes' />
+                        <param name='display_static_image' value='yes' />
+                        <param name='display_spinner' value='yes' />
+                        <param name='display_overlay' value='yes' />
+                        <param name='display_count' value='yes' />
+                        <param name='language' value='en' />
+                        <param name='filter' value='publish=yes' />
+                    </object>
+                </div>                
+                <script type='text/javascript'>                   
+                    var divElement = document.getElementById('viz1606592558131');                    
+                    var vizElement = divElement.getElementsByTagName('object')[0];                    
+                    vizElement.style.width='100%';vizElement.style.height=(divElement.offsetWidth*0.75)+'px';                    
+                    var scriptElement = document.createElement('script');                    
+                    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    
+                    vizElement.parentNode.insertBefore(scriptElement, vizElement);                
+                </script>
+            </div>
+        </div>
+    </body>
+</html>
