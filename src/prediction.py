@@ -25,6 +25,7 @@ training_set, test_set = dataset.iloc[0:training_size,1:2].values, dataset.iloc[
 
 sc = MinMaxScaler(feature_range = (0, 1))
 trainingset_scaled = sc.fit_transform(training_set)
+test_set_scaled = sc.fit_transform(test_set)
 print(trainingset_scaled)
 
 xtrain = []
@@ -32,7 +33,13 @@ ytrain = []
 for i in range(60, len(training_set)):
     xtrain.append(trainingset_scaled[i-60:i, 0])
     ytrain.append(trainingset_scaled[i, 0])
+xtest = []
+ytest = []
+for i in range(60, len(test_set)-60):
+    xtest.append(test_set_scaled[i-60:i, 0])
+    ytest.append(test_set_scaled[i,0])
 xtrain, ytrain = np.array(xtrain), np.array(ytrain)
+xtest, ytest = np.array(xtest), np.array(ytest)
 xtrain = np.reshape(xtrain, (xtrain.shape[0], xtrain.shape[1], 1))
 
 lstm_model = Sequential()
@@ -46,9 +53,9 @@ lstm_model.add(LSTM(units = 50))
 lstm_model.add(Dropout(0.2))
 lstm_model.add(Dense(units = 1))
 
-lstm_model.compile(optimizer = 'adam', loss = 'mean_squared_error')
+lstm_model.compile(optimizer = 'adam', loss = 'mean_squared_error', metrics=['accuracy'])
 
-lstm_model.fit(xtrain, ytrain, epochs = 20, batch_size = 32)
+lstm_model.fit(xtrain, ytrain, epochs = 1, batch_size = 32)
 lstm_model.save('google_model')
 dataset_train = dataset.iloc[:training_size, 1:2]
 dataset_test = dataset.iloc[training_size:, 1:2]
@@ -56,15 +63,13 @@ dataset_total = pd.concat((dataset_train, dataset_test), axis = 0)
 inputs = dataset_total[len(dataset_total) - len(dataset_test) - 60:].values
 inputs = inputs.reshape(-1,1)
 inputs = sc.transform(inputs)
-print(inputs)
-xtest = []
-for i in range(60, len(test_set)+60):
-    xtest.append(inputs[i-60:i, 0])
-xtest = np.array(xtest)
 xtest = np.reshape(xtest, (xtest.shape[0], xtest.shape[1], 1))
 print(xtest.shape)
 
 predicted_values = lstm_model.predict(xtest)
+scores = lstm_model.evaluate(xtest, ytest, verbose=0)
+print(scores)
+print("%s: %.2f%%" % (lstm_model.metrics_names[1], scores[1]*100))
 predicted_values = sc.inverse_transform(predicted_values)
 print(len(predicted_values))
 print(len(dataset_test.values))
